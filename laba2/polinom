@@ -1,0 +1,18 @@
+import sys
+
+def formula(x): # Решение формулы
+    if x == 0:
+        return 0
+    return 1/int(x)*3
+
+if __name__ == '__main__':
+    # Считывание аргумента командной строки
+    string = sys.argv[1]
+    string = string.split('--poly=')
+    string = string[1].split(',')
+
+    summ = 0
+    for x in string:
+        summ += formula(x)
+    print(string)
+    print(summ)
