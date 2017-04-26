@@ -1,0 +1,89 @@
+class Number:   # Класс, в котором хранятся данные о числе
+    def __init__(self, number):
+        self.__number__ = number
+
+    def getNum(self):
+        return self.__number__
+
+    def setNum(self, number):
+        self.__number__ = number
+
+class Operation:  # Класс, в котором хранятся данные об операции
+    def __init__(self, operation):
+        self.__operation__ = operation
+
+    def getOperation(self):
+        return self.__operation__
+
+    def setOperation(self, operation):
+        self.__operationr__ = operation
+
+class Answer:   # Класс, отвечающий за поиск ответа
+    def calculate():
+    operation = str(input('''
+    Please type in the math operation you would like to complete:
+    + for addition
+    - for subtraction
+    * for multiplication
+    / for division
+    '''))
+    a = int(input('Please enter the first number: '))
+    b = int(input('Please enter the second number: '))
+    if operation == '+':
+        self.__answer__ = self.addition(a, b)
+        print('{} + {} = '.format(a, b))
+        print(a + b)
+    elif operation == '-':
+        self.__answer__ = self.subtraction(a, b)
+        print('{} - {} = '.format(a, b))
+        print(a - b)
+    elif operation == '*':
+        self.__answer__ = self.multiplication(a, b)
+        print('{} * {} = '.format(a, b))
+        print(a * b)
+    elif operation == '/':
+        self.__answer__ = self.division(a, b)
+        print('{} / {} = '.format(a, b))
+        print(a / b)
+    else:
+        print('You have not typed a valid operator, please run the program again.')
+
+        self.__answer__ = None
+    self.getAnswer()
+
+    def addition(self, a, b):
+        return a + b
+
+    def subtraction(self, a, b):
+        return a - b
+
+    def multiplication(self, a, b):
+        return a * b
+
+    def division(self, a, b):
+        return a / b
+
+    def getAnswer(self):
+        return self.__answer__
+        # Добавление функции again() в calculate()
+    again()
+# Инициализация классов
+    a = Number(float(input()))
+    b = Number(float(input()))
+    operation = Operation(str(input()))
+    answer = Answer()
+    answer.calculation(a.getNum(), b.getNum(), operation.getOper())
+
+def again():
+    calc_again = input('''
+    Do you want to calculate again?
+    Please type Y for YES or N for NO.
+    ''')
+    if calc_again.upper() == 'Y':
+        calculate()
+    elif calc_again.upper() == 'N':
+        print('See you later.')
+    else:
+        again()
+
+calculate()
