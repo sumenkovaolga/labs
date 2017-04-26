@@ -1,0 +1,40 @@
+import math
+
+class Number:   # Класс, в котором сохраняется число, корень которого ищется
+    def __init__(self, s):
+        self.__s__ = s
+
+    def getNum(self):
+        return self.__s__
+class LastAnswer:   # Последний ответ
+    def __init__(self):
+        self.__x__ = 3
+
+    def getLA(self):
+        return self.__x__
+
+    def setLA(self, ans):
+        self.__x__ = ans
+
+class formula:   # Поиск ответа
+    def setAns(self, x, s):
+        self.__ans__ = (x + (s / x)) / 2
+
+    def getAns(self):
+        return self.__ans__
+
+if __name__ == '__main__':
+    # Инициализация классов
+    print('Введите число корня: ')
+    s = Number(float(input()))
+    x = LastAnswer()
+    answer = formula()
+    answer.setAns(x.getLA(), s.getNum())
+
+    # Пока ответ не будет приближенно точен
+    while abs(x.getLA() - answer.getAns()) > 0.00001:
+        x.setLA(answer.getAns())
+        answer.setAns(x.getLA(), s.getNum())
+
+    print('Ответ = {}'.format(answer.getAns()))
+    input('Нажмите любую клавишу для выхода: ')
