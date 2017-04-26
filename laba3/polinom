@@ -7,12 +7,12 @@ def formula(x): # Решение формулы
 
 if __name__ == '__main__':
     # Считывание аргумента командной строки
-    string = sys.argv[1]
-    string = string.split('--poly=')
-    string = string[1].split(',')
+    lines = sys.argv[1]
+    lines = lines.split('--poly=')
+    lines = lines[1].split(',')
 
     summ = 0
-    for x in string:
+    for x in lines:
         summ += formula(x)
-    print(string)
+    print(lines)
     print(summ)
