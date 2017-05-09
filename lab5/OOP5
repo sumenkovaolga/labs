@@ -1,0 +1,100 @@
+import mailbox
+import numpy as np
+import matplotlib.pyplot as plt
+
+MBOX_PATH = 'mbox.txt'
+
+THRESHOLD_XSPAM = 0.9
+THRESHOLD_COUNT = 50
+
+class Correspondent():
+    _correspondents_dict = {}
+
+    def __init__(self, addr):
+        self.addr = addr
+        self.messages = []
+        self.spam_rating_sum = 0
+        self.spam_rating_average = 0
+
+    def add_message(self, message):
+        self.messages.append(message)
+        self.spam_rating_sum += message.dspam
+        self.spam_rating_average = self.spam_rating_sum / len(self.messages)
+
+    @staticmethod
+    def get_or_create(addr):
+        if addr not in Correspondent._correspondents_dict:
+            Correspondent._correspondents_dict[addr] = Correspondent(addr)
+        return Correspondent._correspondents_dict[addr]
+
+
+class Message():
+    total_messages = 0
+    total_dspam_sum = 0
+    average_dspam = 0
+
+    def __init__(self, message):
+        self.message = message
+        self.dspam = float(message['X-DSPAM-Confidence'])
+        self.content = message.get_payload()
+        self.from_addr = message['from']
+
+        Message.total_messages += 1
+        Message.total_dspam_sum += self.dspam
+        Message.average_dspam = Message.total_dspam_sum / Message.total_messages
+
+
+class MBoxScanner():
+    def __init__(self, mbox_path):
+        mbox = mailbox.mbox(mbox_path)
+        self.messages = [Message(m) for m in mbox]
+
+        self.correspondents = set()
+        for m in self.messages:
+            correspondent = Correspondent.get_or_create(m.from_addr)
+            correspondent.add_message(m)
+            self.correspondents.add(correspondent)
+
+    def average_X_DSPAM_print(self):
+        print('Количество писем: ', Message.total_messages)
+        print('Среднее значение параметра X-DSPAM-Confidence: ', Message.average_dspam)
+
+    def spammers_detect_n_print(self):
+        black_list = []
+        for correspondent in self.correspondents:
+            if (correspondent.spam_rating_average >= THRESHOLD_XSPAM and len(correspondent.messages) >= THRESHOLD_COUNT):
+                black_list.append(correspondent)
+
+        print('Следует заблокировать за спам:')
+        print('(среднее X-DSPAM-Confidence >= {} и количество писем >= {})'.format(THRESHOLD_XSPAM, THRESHOLD_COUNT))
+        for correspondent in black_list:
+            print('  * {}'.format(correspondent.addr))
+            print('      количество писем: {}'.format(len(correspondent.messages)))
+            print('      среднее значение параметра X-DSPAM-Confidence: {}'.format(correspondent.spam_rating_average))
+
+    def draw_histogramm(self):
+        beams = [len(cor.messages) for cor in self.correspondents]
+        addrs = [cor.addr for cor in self.correspondents]
+        ind = np.arange(len(self.correspondents))
+        width = 0.70
+
+        p1 = plt.bar(ind, beams, width, color='#d62728')
+        plt.ylabel('Количество')
+        plt.title('Количество отправленных сообщений')
+        plt.xticks(ind, addrs, rotation=90)
+        # fig.subplots_adjust(bottom=0.2)
+        plt.tight_layout()
+
+        plt.show()
+        pass
+
+
+def main():
+    scanner = MBoxScanner(MBOX_PATH)
+    scanner.average_X_DSPAM_print()
+    scanner.spammers_detect_n_print()
+    scanner.draw_histogramm()
+
+
+if __name__ == '__main__':
+    main()
